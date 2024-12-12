@@ -1,22 +1,28 @@
 <template>
   <div class="card-list px-8 grid grid-cols-2 gap-4">
-    <!-- Передача обработчиков событий в Cart -->
     <Cart
-      :imageUrl="'/sneakers/sneakers-1.jpg'"
+      v-for="item in items"
+      :key="item.id"
+      :imageUrl="item.imageUrl"
+      :title="item.title"
+      :price="item.price.toString()" 
       :isAdded="isAdded"
       :isFavorite="isFavorite"
-      :title="'Мужские Кроссовки Nike Blazer Mid Suede'"
-      :price="'12 999 uah.'"
-      @clickIsFavorite="handleClickIsFavorite"
-      @clickIsAdded="handleClickIsAdded"
+      :clickIsFavorite="handleClickIsFavorite"
+      :clickIsAdded="handleClickIsAdded"
     />
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
+import Cart from "./Cart.vue";
 
-// Локальное состояние для отслеживания
+const props = defineProps({
+  items: Array
+});
+
+// Локальное состояние
 const isAdded = ref(false);
 const isFavorite = ref(false);
 
