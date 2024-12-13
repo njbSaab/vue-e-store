@@ -2,13 +2,13 @@
   <div class="cart flex flex-col relative rounded-3xl border border-salate-100 p-4 cursor-pointer hover:translate-y-1 hover:shadow-xl transition-all bg-white">
     <!-- Избранное -->
     <img
-      @click="clickIsFavorite"
+      @click="$emit('toggleFavorite')"
       :src="isFavorite ? '/like-2.svg' : '/like-1.svg'"
-      alt=""
+      alt="Favorite"
       class="absolute top-2 left-2 w-[30px] cursor-pointer"
-    >
+    />
     <!-- Основное изображение -->
-    <img :src="imageUrl" class="mx-w-full" alt="">
+    <img :src="imageUrl" class="mx-w-full" alt="Product" />
     <p>{{ title }}</p>
 
     <!-- Цена и кнопка добавления -->
@@ -21,9 +21,9 @@
       <img
         @click="clickIsAdded"
         :src="isAdded ? '/checked.svg' : '/plus.svg'"
-        alt=""
+        alt="Add to Cart"
         class="cursor-pointer"
-      >
+      />
     </div>
   </div>
 </template>
@@ -32,7 +32,7 @@
 const props = defineProps({
   imageUrl: String,
   title: String,
-  price: [String, Number], 
+  price: [String, Number],
   isFavorite: Boolean,
   isAdded: Boolean,
   clickIsAdded: Function,
@@ -57,6 +57,6 @@ const clickIsAdded = () => {
 };
 </script>
 
-<style lang="scss" scoped>
-
+<style scoped>
+/* Ваши стили */
 </style>

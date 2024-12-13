@@ -5,39 +5,84 @@
       :key="item.id"
       :imageUrl="item.imageUrl"
       :title="item.title"
-      :price="item.price.toString()" 
-      :isAdded="isAdded"
-      :isFavorite="isFavorite"
-      :clickIsFavorite="handleClickIsFavorite"
-      :clickIsAdded="handleClickIsAdded"
+      :price="item.price.toString()"
+      :isFavorite="item.isFavorite"
+      @toggleFavorite="toggleFavorite(item.id)"
     />
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, reactive, onMounted, watch } from "vue";
 import Cart from "./Cart.vue";
 
 const props = defineProps({
-  items: Array
+  items: Array,
 });
 
-// Локальное состояние
-const isAdded = ref(false);
-const isFavorite = ref(false);
+const favorites = ref([]); // Храним список избранных ID
 
-// Обработчики событий
-const handleClickIsFavorite = () => {
-  isFavorite.value = !isFavorite.value;
-  console.log("Избранное:", isFavorite.value);
+// Загрузка избранного из localStorage
+const loadFavoritesFromStorage = () => {
+  console.log("Loading favorites from localStorage...");
+  favorites.value = JSON.parse(localStorage.getItem("favorites")) || [];
+  favorites.value = [...new Set(favorites.value)]; // Убираем дубликаты
+  console.log("Loaded favorites:", favorites.value);
+
+  // Устанавливаем флаг isFavorite для каждого элемента
+  props.items.forEach((item) => {
+    item.isFavorite = favorites.value.includes(item.id);
+    console.log(`Item ${item.id} (${item.title}) isFavorite set to:`, item.isFavorite);
+  });
 };
 
-const handleClickIsAdded = () => {
-  isAdded.value = !isAdded.value;
-  console.log("Добавлено в корзину:", isAdded.value);
+// Сохраняем избранное в localStorage
+const saveFavoritesToStorage = () => {
+  localStorage.setItem("favorites", JSON.stringify(favorites.value));
 };
+
+// Тогглинг избранного для конкретного элемента
+const toggleFavorite = (id) => {
+  console.log(`Toggle favorite called for ID: ${id}`);
+  const item = props.items.find((item) => item.id === id);
+
+  if (item) {
+    console.log(`Found item for ID ${id}:`, item);
+    item.isFavorite = !item.isFavorite;
+
+    if (item.isFavorite) {
+      if (!favorites.value.includes(id)) {
+        favorites.value.push(id); // Добавляем в избранное
+      }
+    } else {
+      favorites.value = favorites.value.filter((favId) => favId !== id); // Удаляем из избранного
+    }
+
+    favorites.value = [...new Set(favorites.value)]; // Убираем дубликаты
+    saveFavoritesToStorage(); // Сохраняем изменения
+    console.log("Updated favorites:", favorites.value);
+  } else {
+    console.error(`Item with ID ${id} not found.`);
+  }
+};
+
+// Следим за изменением items (вдруг список обновится)
+watch(
+  () => props.items,
+  (newItems) => {
+    console.log("Items updated:", newItems);
+    loadFavoritesFromStorage();
+  },
+  { immediate: true }
+);
+
+// Загружаем избранное при инициализации
+onMounted(() => {
+  console.log("onMounted: Initializing...");
+  loadFavoritesFromStorage();
+});
 </script>
 
-<style lang="scss" scoped>
-
+<style scoped>
+/* Ваши стили */
 </style>
