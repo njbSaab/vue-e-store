@@ -9,7 +9,9 @@
       </div>
       <nav class="flex items-center">
         <ul class="flex items-center gap-4">
-          <li class="flex items-center gap-2 text-gray-500 hover:text-black transition-all cursor-pointer">
+          <li
+          @click="() => { console.log('Click detected in Header'); $emit('open-drawer'); }"
+          id="openDrawer" class="flex items-center gap-2 text-gray-500 hover:text-black transition-all cursor-pointer">
             <img src="/cart.svg" alt="">
             <span>1205 руб.</span>
           </li>
@@ -27,9 +29,9 @@
 </template>
 
 <script setup>
+const emit = defineEmits(["open-drawer"]); // Определение событий
 
 </script>
 
 <style lang="scss" scoped>
-
 </style>

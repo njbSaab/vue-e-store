@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, watch, ref } from "vue";
+import { onMounted, watch, ref, provide, computed } from "vue";
 import axios from "axios";
 
 const items = ref([]); // Полный список элементов
@@ -7,7 +7,10 @@ const filteredItems = ref([]); // Отфильтрованный список
 const favorites = ref([]); // Список избранных ID
 const isFilteringFavorites = ref(false); // Состояние фильтрации по избранному
 const sortBy = ref(""); // Сортировка
+const arrayAddedToCart = ref([]);
+const isAddedToCart = ref(false);
 const searchQuery = ref(""); // Поиск
+const drawerOpen = ref(false); // Состояние бокового меню
 
 // Функция загрузки продуктов
 const fetchProducts = async () => {
@@ -36,7 +39,9 @@ const loadFavoritesFromStorage = () => {
 const saveFavoritesToStorage = () => {
   localStorage.setItem("favorites", JSON.stringify(favorites.value));
 };
-
+const saveAddedToStorage = () => {
+  localStorage.setItem("addedToCart", JSON.stringify(arrayAddedToCart.value));
+}
 // Тогглинг состояния избранного
 const toggleFavorite = (id) => {
   const item = items.value.find((item) => item.id === id);
@@ -53,11 +58,33 @@ const toggleFavorite = (id) => {
   }
 };
 
+const addToCart = (id) => {
+  const item = items.value.find((item) => item.id === id);
+  if (item) {
+    item.isAdded = !item.isAdded;
+    if (item.isAdded) {
+      arrayAddedToCart.value.push(id);
+    } else {
+      arrayAddedToCart.value = arrayAddedToCart.value.filter((cartId) => cartId !== id);
+    }
+    saveAddedToStorage();
+  }
+};
+const updateCartItems = (updatedCart) => {
+  // Вместо прямой попытки обновить computed, обновляем исходный массив
+  arrayAddedToCart.value = updatedCart.map((item) => item.id); // Сохраняем только ID товаров
+};
+
 // Переключение фильтрации
 const toggleFavoritesFilter = () => {
   isFilteringFavorites.value = !isFilteringFavorites.value;
   applyFilters();
 };
+
+// Создано вычисляемое свойство для получения товаров, добавленных в корзину
+const cartItems = computed(() =>
+  items.value.filter((item) => arrayAddedToCart.value.includes(item.id))
+);
 
 // Применение фильтров (поиск, сортировка, избранное)
 const applyFilters = () => {
@@ -110,11 +137,22 @@ const itemsImg = [
   { imageUrl: "/sneakers/sneakers-7.jpg" },
   { imageUrl: "/sneakers/sneakers-8.jpg" },
 ];
+
+const openDrawer = () => {
+  console.log('click');
+
+  drawerOpen.value = true;
+}
+const closeDrawer = () => {
+  drawerOpen.value = false
+}
+provide('CartActions', {closeDrawer})
 </script>
 
 <template>
+  <Drawer v-if="drawerOpen" :cartItems="cartItems" @updateCartItems="updateCartItems" />
   <div class="main-wrapper w-4/5 m-auto bg-white rounded-xl shadow-xl mb-14 mt-14 pb-4">
-    <Header />
+    <Header  @open-drawer="openDrawer"/>
 
     <div class="main-title-group flex flex-col items-center gap-4 py-4 px-8">
       <h1 class="text-3xl py-4 px-8 font-bold flex-[100%]">Все кроссовки</h1>
@@ -150,6 +188,6 @@ const itemsImg = [
     </div>
 
     <!-- Список карточек -->
-    <CardList :items="filteredItems" @toggleFavorite="toggleFavorite" />
+    <CardList :items="filteredItems" @toggleFavorite="toggleFavorite" @addToCart="addToCart" />
   </div>
 </template>

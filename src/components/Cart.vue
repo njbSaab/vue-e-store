@@ -19,7 +19,7 @@
       </div>
       <!-- Добавить в корзину -->
       <img
-        @click="clickIsAdded"
+        @click="$emit('addToCart', id)"
         :src="isAdded ? '/checked.svg' : '/plus.svg'"
         alt="Add to Cart"
         class="cursor-pointer"
@@ -30,31 +30,13 @@
 
 <script setup>
 const props = defineProps({
+  id: Number,
   imageUrl: String,
   title: String,
   price: [String, Number],
   isFavorite: Boolean,
   isAdded: Boolean,
-  clickIsAdded: Function,
-  clickIsFavorite: Function,
 });
-
-// Явный вызов переданных функций из props
-const clickIsFavorite = () => {
-  if (typeof props.clickIsFavorite === "function") {
-    props.clickIsFavorite();
-  } else {
-    console.error("clickIsFavorite is not a function");
-  }
-};
-
-const clickIsAdded = () => {
-  if (typeof props.clickIsAdded === "function") {
-    props.clickIsAdded();
-  } else {
-    console.error("clickIsAdded is not a function");
-  }
-};
 </script>
 
 <style scoped>

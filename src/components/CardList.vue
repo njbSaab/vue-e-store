@@ -2,13 +2,16 @@
   <div class="card-list px-8 grid grid-cols-2 gap-4">
     <Cart
       v-for="item in items"
+      :id="item.id"
       :key="item.id"
       :imageUrl="item.imageUrl"
       :title="item.title"
       :price="item.price.toString()"
       :isFavorite="item.isFavorite"
+      :isAdded="item.isAdded"
       @toggleFavorite="toggleFavorite(item.id)"
-    />
+      @addToCart="(id) =>  $emit('addToCart', id)"
+     />
   </div>
 </template>
 
@@ -75,6 +78,8 @@ watch(
   },
   { immediate: true }
 );
+
+const emit = defineEmits(["addToCart"]);
 
 // Загружаем избранное при инициализации
 onMounted(() => {
