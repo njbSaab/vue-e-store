@@ -13,7 +13,7 @@
           @click="() => { console.log('Click detected in Header'); $emit('open-drawer'); }"
           id="openDrawer" class="flex items-center gap-2 text-gray-500 hover:text-black transition-all cursor-pointer">
             <img src="/cart.svg" alt="">
-            <span>1205 руб.</span>
+              <span>{{ cartTotal.toFixed(2) }} uah</span>
           </li>
           <li class="flex items-center gap-2 text-gray-500 hover:text-black transition-all cursor-pointer">
             <img src="/heart.svg" alt="">
@@ -31,6 +31,12 @@
 <script setup>
 const emit = defineEmits(["open-drawer"]); // Определение событий
 
+const props = defineProps({
+  cartTotal: {
+    type: Number,
+    required: true,
+  },
+});
 </script>
 
 <style lang="scss" scoped>

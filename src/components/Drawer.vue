@@ -15,9 +15,9 @@ const handleUpdateCart = (updatedCart) => {
 </script>
 
 <template>
-  <div class="fixed w-full h-full top-0 left-0 bg-black z-10 opacity-75">
+  <div class="fixed w-full h-full top-0 left-0 bg-black z-10 opacity-75" v-auto-animate>
   </div>
-  <div class="fixed w-[350px] h-full top-0 right-0 bg-white z-20 px-2">
+  <div class="fixed w-[350px] h-full top-0 right-0 bg-white z-20 px-2" v-auto-animate>
     <DrawerHeader :cartItems="cartItems" />
     <CartBasketList :cartItems="cartItems" @updateCart="handleUpdateCart" />
     <DrawerFooter :cartItems="cartItems" />

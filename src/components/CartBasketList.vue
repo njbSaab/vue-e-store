@@ -14,7 +14,7 @@ const handleRemoveItem = (id) => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
+  <div class="flex flex-col gap-4" v-auto-animate>
     <CartBasket
       v-for="item in cartItems"
       :key="item.id"

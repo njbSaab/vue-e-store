@@ -1,5 +1,5 @@
 <template>
-  <div class="card-list px-8 grid grid-cols-2 gap-4">
+  <div class="card-list px-8 grid grid-cols-2 gap-4" v-auto-animate>
     <Cart
       v-for="item in items"
       :id="item.id"

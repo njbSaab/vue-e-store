@@ -146,13 +146,17 @@ const openDrawer = () => {
 const closeDrawer = () => {
   drawerOpen.value = false
 }
+const totalPrice = computed(() =>
+  cartItems.value.reduce((sum, item) => sum + (item.price || 0), 0)
+);
+
 provide('CartActions', {closeDrawer})
 </script>
 
 <template>
   <Drawer v-if="drawerOpen" :cartItems="cartItems" @updateCartItems="updateCartItems" />
   <div class="main-wrapper w-4/5 m-auto bg-white rounded-xl shadow-xl mb-14 mt-14 pb-4">
-    <Header  @open-drawer="openDrawer"/>
+    <Header :cartTotal="totalPrice" @open-drawer="openDrawer" />
 
     <div class="main-title-group flex flex-col items-center gap-4 py-4 px-8">
       <h1 class="text-3xl py-4 px-8 font-bold flex-[100%]">Все кроссовки</h1>
